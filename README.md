@@ -1,7 +1,7 @@
 # Hello Universe
 
-## Bloggging Space:
 ---
+## Bloggging Space:
 ## 🧠 Philosophy in One Sentence
 
 > *I don't write backends just to ship — I write them to survive power outages, scale to millions, and train the next engineer who reads my code.*
