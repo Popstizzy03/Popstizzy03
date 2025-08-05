@@ -21,3 +21,5 @@ This isn’t about pride — it’s about **sovereignty**. I’m not building a 
 
 [![Anurag's GitHub stats-Dark](https://github-readme-stats.vercel.app/api?username=Popstizzy03&show_icons=true&theme=dark#gh-dark-mode-only)](https://github.com/anuraghazra/github-readme-stats#gh-dark-mode-only)
 
+### 🔝 Top Contributed Repo
+![](https://github-contributor-stats.vercel.app/api?username=Popstizzy03&limit=5&theme=dark&combine_all_yearly_contributions=true)
