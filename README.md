@@ -24,5 +24,8 @@ This isn’t about pride — it’s about **sovereignty**. I’m not building a 
 ### 🔝 Top Contributed Repo
 ![](https://github-contributor-stats.vercel.app/api?username=Popstizzy03&limit=5&theme=dark&combine_all_yearly_contributions=true)
 
+### most used languages
+[![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=Popstizzy03&layout=compact&theme=dark)](https://github.com/Popstizzy03)
+
 ### Visitors
 ![Visitors Badge](https://komarev.com/ghpvc/?username=Popstizzy03&label=Visitors&style=for-the-badge&color=6cb288)
