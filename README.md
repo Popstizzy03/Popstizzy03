@@ -27,5 +27,10 @@ This isn’t about pride — it’s about **sovereignty**. I’m not building a 
 ### Rabboni Kabongo's most used languages
 [![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=Popstizzy03&layout=compact&theme=dark)](https://github.com/Popstizzy03)
 
+<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif">
+
+<img align="center" width="774em" src="https://github-readme-stats.vercel.app/api/wakatime?username=Popstizzy03&theme=dark&langs_count=14&layout=compact&hide=other,xml,text"/>
+</div>
+
 ### Visitors
 ![Visitors Badge](https://komarev.com/ghpvc/?username=Popstizzy03&label=Visitors&style=for-the-badge&color=6cb288)
