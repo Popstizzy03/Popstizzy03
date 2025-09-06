@@ -1,50 +1,66 @@
-# Hello Universe
-
----
-## Bloggging Space:
-## 🧠 Philosophy in One Sentence
+# Hello Universe 👋
 
 > *I don't write backends just to ship — I write them to survive power outages, scale to millions, and train the next engineer who reads my code.*
-> 
-## 📍 Endgame
 
-This isn’t about pride — it’s about **sovereignty**. I’m not building a demo. I’m building a platform that will:
+---
+
+## 🚀 About Me
+
+I'm Rabboni Kabongo, a passionate full-stack developer with interests in electronics, mathematics, and physics. I'm dedicated to building robust systems and educating the next generation of engineers.
+
+## 🎯 Mission & Vision
+
+This isn't about pride — it's about **sovereignty**. I'm building a platform that will:
 
 - Teach real-world backend development  
 - Train industry-ready engineers and instructors  
 - Inspire self-hosted entrepreneurship  
 - Spread AI safety and digital self-reliance
 
-[![Made by Rabboni Kabongo](https://img.shields.io/badge/Made%20by-Rabboni_Kabongo-red)](https://www.facebook.com/profile.php?id=61574399736520)
-![Version](https://img.shields.io/badge/Version-1.0.0-blue)
 ---
 
-[![Anurag's GitHub stats-Dark](https://github-readme-stats.vercel.app/api?username=Popstizzy03&show_icons=true&theme=dark#gh-dark-mode-only)](https://github.com/anuraghazra/github-readme-stats#gh-dark-mode-only)
+## 📊 GitHub Stats
 
-### 🔝 Top Contributed Repo
-![](https://github-contributor-stats.vercel.app/api?username=Popstizzy03&limit=5&theme=dark&combine_all_yearly_contributions=true)
+<div align="center">
 
-### Rabboni Kabongo's most used languages
-[![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=Popstizzy03&layout=compact&theme=dark)](https://github.com/Popstizzy03)
+![Anurag's GitHub stats](https://github-readme-stats.vercel.app/api?username=Popstizzy03&show_icons=true&theme=dark)
 
-<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif">
+![Top Languages](https://github-readme-stats.vercel.app/api/top-langs/?username=Popstizzy03&layout=compact&theme=dark)
 
+![Contributions](https://github-contributor-stats.vercel.app/api?username=Popstizzy03&limit=5&theme=dark&combine_all_yearly_contributions=true)
 
-### Visitors
-![Visitors Badge](https://komarev.com/ghpvc/?username=Popstizzy03&label=Visitors&style=for-the-badge&color=6cb288)
+</div>
 
-- 🖥️ Fullstack Web Dev
+---
+
+## 🛠️ Technical Skills
+
+### Programming Languages
+<p>
+  <img alt="C++" src="https://img.shields.io/badge/C++-00599C?style=for-the-badge&logo=c%2B%2B&logoColor=white"/>
+  <img alt="Python" src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white"/>
+  <img alt="JavaScript" src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black"/>
+  <img alt="HTML5" src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white"/>
+  <img alt="CSS3" src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white"/>
+</p>
+
+### Domains of Interest
+- 🖥️ Fullstack Web Development
 - ⚡ Electronics
 - 🧮 Mathematics
 - ⚛️ Physics
 
-<br>
+---
 
-<h2 align="left">🖥️Languages</h2>
-<p align="left">
-  <a href="https://www.isocpp.org"><img alt="C++" src="badges/svgs/Cpp-badge.svg"/></a>
-  <a href="https://www.python.org/"><img alt="Python" src="badges/svgs/Python-badge.svg"/></a>
-  <a href="https://www.javascript.com/"><img alt="Javascript" src="badges/svgs/JavaScript-badge.svg"/></a>
-  <a href="http://tinyurl.com/y4vmrxfk"><img alt="Html" src="badges/svgs/Html-badge.svg"/></a>
-  <a href="http://tinyurl.com/2p8dj9yf"><img alt="Css" src="badges/svgs/Css-badge.svg"/></a>
-</p>
+## 📈 Visitor Count
+
+![Visitors](https://komarev.com/ghpvc/?username=Popstizzy03&label=Profile%20Views&color=0e75b6&style=flat)
+
+---
+
+<div align="center">
+
+[![Made by Rabboni Kabongo](https://img.shields.io/badge/Made%20by-Rabboni_Kabongo-red?style=for-the-badge)](https://www.facebook.com/profile.php?id=61574399736520)
+![Version](https://img.shields.io/badge/Version-1.0.0-blue?style=for-the-badge)
+
+</div>
