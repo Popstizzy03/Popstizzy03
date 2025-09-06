@@ -6,13 +6,13 @@
 
 ## 🚀 About Me
 
-I'm Rabboni Kabongo, a passionate full-stack developer with interests in electronics, mathematics, and physics. I'm dedicated to building robust systems and educating the next generation of engineers.
+I'm Rabboni Kabongo, a passionate full-stack developer with interests in Electrical and Electronic Engineering, Mathematics, and Physics. I'm dedicated to building robust systems and educating the next generation of engineers.
 
 ## 🎯 Mission & Vision
 
 This isn't about pride — it's about **sovereignty**. I'm building a platform that will:
 
-- Teach real-world backend development  
+- Teach real-world future ready skills 
 - Train industry-ready engineers and instructors  
 - Inspire self-hosted entrepreneurship  
 - Spread AI safety and digital self-reliance
