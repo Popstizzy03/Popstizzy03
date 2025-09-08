@@ -150,7 +150,7 @@ This isn't about pride — it's about **sovereignty**. I'm building a platform t
 ## 📫 Let's Connect
 
 <p align="center">
-  <a href="mailto:your.email@example.com">
+  <a href="mailto:kabongorabboni03@gmail.com">
     <img alt="Email" src="https://img.shields.io/badge/Email-D14836?style=for-the-badge&logo=gmail&logoColor=white"/>
   </a>
   <a href="https://www.linkedin.com/in/yourprofile">
