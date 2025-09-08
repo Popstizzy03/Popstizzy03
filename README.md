@@ -6,13 +6,13 @@
 
 ## 🚀 About Me
 
-I'm Rabboni Kabongo, a passionate full-stack developer with interests in Electrical and Electronic Engineering, Mathematics, and Physics. I'm dedicated to building robust systems and educating the next generation of engineers.
+I'm Rabboni Kabongo, a passionate full-stack developer with interests in electronics, mathematics, and physics. I'm dedicated to building robust systems and educating the next generation of engineers.
 
 ## 🎯 Mission & Vision
 
 This isn't about pride — it's about **sovereignty**. I'm building a platform that will:
 
-- Teach real-world future ready skills 
+- Teach real-world backend development  
 - Train industry-ready engineers and instructors  
 - Inspire self-hosted entrepreneurship  
 - Spread AI safety and digital self-reliance
@@ -48,11 +48,21 @@ This isn't about pride — it's about **sovereignty**. I'm building a platform t
   <img alt="CSS3" src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white"/>
 </p>
 
-### Frameworks & Libraries
+### Frontend Frameworks & Libraries
 <p>
   <img alt="Svelte" src="https://img.shields.io/badge/Svelte-4A4A55?style=for-the-badge&logo=svelte&logoColor=FF3E00"/>
   <img alt="React" src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB"/>
   <img alt="Angular" src="https://img.shields.io/badge/Angular-DD0031?style=for-the-badge&logo=angular&logoColor=white"/>
+</p>
+
+### Backend Frameworks
+<p>
+  <img alt="NestJS" src="https://img.shields.io/badge/NestJS-E0234E?style=for-the-badge&logo=nestjs&logoColor=white"/>
+  <img alt="Express.js" src="https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white"/>
+  <img alt="Hono" src="https://img.shields.io/badge/Hono-3474D0?style=for-the-badge"/>
+  <img alt="Django" src="https://img.shields.io/badge/Django-092E20?style=for-the-badge&logo=django&logoColor=white"/>
+  <img alt="Flask" src="https://img.shields.io/badge/Flask-000000?style=for-the-badge&logo=flask&logoColor=white"/>
+  <img alt="FastAPI" src="https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white"/>
 </p>
 
 ### Domains of Interest
