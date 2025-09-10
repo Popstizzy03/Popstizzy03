@@ -107,9 +107,9 @@ This isn't about pride — it's about **sovereignty**. I'm building a platform t
 
 ## 🎓 Education
 
-### Bachelor of Science in Computer Science | University Name
-*Duration: Year - Year*
-- Relevant Courses: Algorithms, Distributed Systems, Database Management
+### Bachelor of Electrical And Electronic Engineering | University Of  Zambia
+*Duration: 2024 - 2028*
+- Relevant Courses: Fundamentals of Electric circuits, Calculus, Database Management
 - Thesis: "Scalable Architecture for High-Traffic Applications"
 
 ### Certifications
