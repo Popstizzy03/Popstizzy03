@@ -172,3 +172,4 @@ This isn't about pride — it's about **sovereignty**. I'm building a platform t
 ![Version](https://img.shields.io/badge/Version-1.0.0-blue?style=for-the-badge)
 
 </div>
+
