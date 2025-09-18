@@ -25,8 +25,6 @@ This isn't about pride — it's about **sovereignty**. I'm building a platform t
 
 ![GitHub Stats](https://github-readme-stats.vercel.app/api?username=Popstizzy03&show_icons=true&theme=dark&include_all_commits=true&count_private=true)
 
-# ![Top Languages](https://github-readme-stats.vercel.app/api/top-langs/?username=Popstizzy03&layout=compact&theme=dark&langs_count=8)
-
 # ![GitHub Streak](https://github-readme-streak-stats.herokuapp.com/?user=Popstizzy03&theme=dark)
 
 </div>
