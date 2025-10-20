@@ -1,4 +1,4 @@
-# Loop through both lists at once
+# Loop through both lists at once to write less code
 daily_visitors = ["🐝", None, "🐛", "🐛", None, "🐝", "🐝"]
 daily_temps = [12, 18, 21, 14, 16, 22, 24]
 
