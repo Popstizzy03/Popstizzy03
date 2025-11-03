@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Diff Viewer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/diff_match_patch/20121119/diff_match_patch.js"></script>
+    <style>
+        .code-editor {
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            tab-size: 4;
+        }
+
+        .diff-line {
+            padding: 2px 8px;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        .diff-added {
+            background-color: #d4f8d4;
+            color: #155724;
+        }
+
+        .dark .diff-added {
+            background-color: #1e4620;
+            color: #7ee087;
+        }
+
+        .diff-removed {
+            background-color: #ffd7d7;
+            color: #721c24;
+        }
+
+        .dark .diff-removed {
+            background-color: #4a1f1f;
+            color: #ff9999;
+        }
+
+        .diff-unchanged {
+            background-color: transparent;
+            color: inherit;
+        }
+
+        .activity-cell {
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+            transition: all 0.2s;
+        }
+
+        .activity-cell:hover {
+            transform: scale(1.2);
+            cursor: pointer;
+        }
+
+        .activity-level-0 {
+            background-color: #ebedf0;
+        }
+
+        .dark .activity-level-0 {
+            background-color: #2d333b;
+        }
+
+        .activity-level-1 {
+            background-color: #9be9a8;
+        }
+
+        .dark .activity-level-1 {
+            background-color: #0e4429;
+        }
+
+        .activity-level-2 {
+            background-color: #40c463;
+        }
+
+        .dark .activity-level-2 {
+            background-color: #006d32;
+        }
+
+        .activity-level-3 {
+            background-color: #30a14e;
+        }
+
+        .dark .activity-level-3 {
+            background-color: #26a641;
+        }
+
+        .activity-level-4 {
+            background-color: #216e39;
+        }
+
+        .dark .activity-level-4 {
+            background-color: #39d353;
+        }
+
+        .change-indicator {
+            transition: all 0.5s ease-in-out;
+            box-shadow: 0 0 20px rgba(251, 191, 36, 0.5);
+        }
+
+        .scrollbar-thin::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        .scrollbar-thin::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .dark .scrollbar-thin::-webkit-scrollbar-track {
+            background: #2d2d2d;
+        }
+
+        .scrollbar-thin::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+
+        .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+    <div class="container mx-auto px-4 py-6 max-w-7xl">
+        <!-- Header -->
+        <div class="mb-6">
+            <h1 class="text-3xl font-bold mb-2 text-gray-800 dark:text-white">Code Diff Viewer</h1>
+            <p class="text-gray-600 dark:text-gray-400">Compare code snippets and track your comparison history</p>
+        </div>
+
+        <!-- Controls -->
+        <div class="mb-6 flex flex-wrap gap-4 items-center">
+            <div class="flex items-center gap-2">
+                <label for="windowCount" class="text-sm font-medium">Number of Windows:</label>
+                <select id="windowCount" class="px-3 py-2 text-base border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                </select>
+            </div>
+
+            <button id="compareBtn" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition">
+                Compare Code
+            </button>
+
+            <button id="clearBtn" class="px-6 py-2 bg-gray-500 hover:bg-gray-600 text-white font-medium rounded-lg transition">
+                Clear All
+            </button>
+        </div>
+
+        <!-- Change Intensity Indicator -->
+        <div class="mb-6">
+            <div class="flex items-center gap-4">
+                <span class="text-sm font-medium">Change Intensity:</span>
+                <div id="changeIndicator" class="change-indicator h-8 w-64 rounded-lg border-2 border-amber-500 flex items-center justify-center text-sm font-semibold" style="background-color: rgba(251, 191, 36, 0.1);">
+                    <span id="changeText">No comparison yet</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Code Editors Container -->
+        <div id="editorsContainer" class="mb-6 grid gap-4"></div>
+
+        <!-- Diff Preview -->
+        <div class="mb-6">
+            <h2 class="text-xl font-bold mb-3 text-gray-800 dark:text-white">Diff Preview</h2>
+            <div id="diffPreview" class="bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg p-4 min-h-[200px] max-h-[400px] overflow-auto scrollbar-thin code-editor">
+                <p class="text-gray-500 dark:text-gray-400 italic">Click "Compare Code" to see differences</p>
+            </div>
+        </div>
+
+        <!-- Activity Grid -->
+        <div class="mb-6">
+            <h2 class="text-xl font-bold mb-3 text-gray-800 dark:text-white">Comparison Activity</h2>
+            <div class="bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg p-4">
+                <div id="activityGrid" class="overflow-x-auto">
+                    <!-- Grid will be generated here -->
+                </div>
+                <div class="mt-3 flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400">
+                    <span>Less</span>
+                    <div class="flex gap-1">
+                        <div class="activity-cell activity-level-0"></div>
+                        <div class="activity-cell activity-level-1"></div>
+                        <div class="activity-cell activity-level-2"></div>
+                        <div class="activity-cell activity-level-3"></div>
+                        <div class="activity-cell activity-level-4"></div>
+                    </div>
+                    <span>More</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dark mode support
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark');
+        }
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            if (event.matches) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        });
+
+        // Initialize diff library
+        const dmp = new diff_match_patch();
+
+        // State
+        let editors = [];
+        let comparisonHistory = {};
+
+        // Create editors based on count
+        function createEditors(count) {
+            const container = document.getElementById('editorsContainer');
+            container.innerHTML = '';
+            editors = [];
+
+            const gridCols = count === 2 ? 'md:grid-cols-2' : count === 3 ? 'md:grid-cols-3' : 'md:grid-cols-2 lg:grid-cols-4';
+            container.className = `mb-6 grid gap-4 ${gridCols}`;
+
+            for (let i = 0; i < count; i++) {
+                const editorDiv = document.createElement('div');
+                editorDiv.className = 'flex flex-col';
+                editorDiv.innerHTML = `
+                    <label class="text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">Code Window ${i + 1}</label>
+                    <textarea
+                        class="code-editor flex-1 min-h-[300px] p-3 text-base border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-vertical scrollbar-thin"
+                        placeholder="Enter code here..."
+                    ></textarea>
+                `;
+                container.appendChild(editorDiv);
+                editors.push(editorDiv.querySelector('textarea'));
+            }
+        }
+
+        // Compare code and generate diff
+        function compareCode() {
+            if (editors.length < 2) return;
+
+            const text1 = editors[0].value;
+            const text2 = editors[1].value;
+
+            if (!text1 && !text2) {
+                document.getElementById('diffPreview').innerHTML = '<p class="text-gray-500 dark:text-gray-400 italic">Please enter code in at least one window</p>';
+                return;
+            }
+
+            // Calculate diff
+            const diffs = dmp.diff_main(text1, text2);
+            dmp.diff_cleanupSemantic(diffs);
+
+            // Calculate change percentage
+            const totalLength = Math.max(text1.length, text2.length);
+            let changedLength = 0;
+
+            diffs.forEach(([op, text]) => {
+                if (op !== 0) {
+                    changedLength += text.length;
+                }
+            });
+
+            const changePercentage = totalLength > 0 ? (changedLength / totalLength) * 100 : 0;
+
+            // Update change indicator
+            updateChangeIndicator(changePercentage);
+
+            // Generate diff HTML
+            let diffHtml = '';
+            diffs.forEach(([op, text]) => {
+                const escaped = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                if (op === -1) {
+                    diffHtml += `<div class="diff-line diff-removed">- ${escaped}</div>`;
+                } else if (op === 1) {
+                    diffHtml += `<div class="diff-line diff-added">+ ${escaped}</div>`;
+                } else {
+                    diffHtml += `<div class="diff-line diff-unchanged">  ${escaped}</div>`;
+                }
+            });
+
+            document.getElementById('diffPreview').innerHTML = diffHtml || '<p class="text-gray-500 dark:text-gray-400 italic">No differences found</p>';
+
+            // Record comparison
+            recordComparison(changePercentage);
+            renderActivityGrid();
+        }
+
+        // Update change intensity indicator
+        function updateChangeIndicator(percentage) {
+            const indicator = document.getElementById('changeIndicator');
+            const text = document.getElementById('changeText');
+
+            // Calculate opacity based on percentage (0-100)
+            const opacity = Math.min(percentage / 100, 1);
+            const intensity = Math.min(percentage / 100, 1);
+
+            // Adjust color from dim to bright amber
+            const r = 251;
+            const g = Math.round(191 - (intensity * 50)); // Darker green component for brighter amber
+            const b = Math.round(36 - (intensity * 20)); // Darker blue component for brighter amber
+
+            indicator.style.backgroundColor = `rgba(${r}, ${g}, ${b}, ${0.3 + opacity * 0.7})`;
+            indicator.style.boxShadow = `0 0 ${20 + intensity * 40}px rgba(251, 191, 36, ${0.3 + opacity * 0.7})`;
+
+            text.textContent = `${percentage.toFixed(1)}% changed`;
+
+            if (percentage < 10) {
+                text.textContent += ' (minimal)';
+            } else if (percentage < 30) {
+                text.textContent += ' (moderate)';
+            } else if (percentage < 60) {
+                text.textContent += ' (significant)';
+            } else {
+                text.textContent += ' (major)';
+            }
+        }
+
+        // Record comparison in history
+        function recordComparison(changePercentage) {
+            const today = new Date().toISOString().split('T')[0];
+
+            if (!comparisonHistory[today]) {
+                comparisonHistory[today] = { count: 0, totalChange: 0 };
+            }
+
+            comparisonHistory[today].count++;
+            comparisonHistory[today].totalChange += changePercentage;
+        }
+
+        // Render activity grid (GitHub style)
+        function renderActivityGrid() {
+            const grid = document.getElementById('activityGrid');
+            const history = comparisonHistory;
+
+            // Generate dates for the last 52 weeks (364 days)
+            const today = new Date();
+            const dates = [];
+
+            for (let i = 364; i >= 0; i--) {
+                const date = new Date(today);
+                date.setDate(date.getDate() - i);
+                dates.push(date.toISOString().split('T')[0]);
+            }
+
+            // Get max count for scaling
+            const counts = Object.values(history).map(h => h.count);
+            const maxCount = Math.max(...counts, 1);
+
+            // Create grid HTML
+            let gridHtml = '<div class="flex gap-1">';
+
+            // Group by weeks
+            const weeks = [];
+            let currentWeek = [];
+
+            dates.forEach((date, index) => {
+                const dayOfWeek = new Date(date).getDay();
+
+                currentWeek.push(date);
+
+                if (dayOfWeek === 6 || index === dates.length - 1) {
+                    weeks.push([...currentWeek]);
+                    currentWeek = [];
+                }
+            });
+
+            // Render weeks
+            weeks.forEach(week => {
+                gridHtml += '<div class="flex flex-col gap-1">';
+
+                // Pad week to start on Sunday
+                const firstDayOfWeek = new Date(week[0]).getDay();
+                for (let i = 0; i < firstDayOfWeek; i++) {
+                    gridHtml += '<div class="activity-cell" style="opacity: 0;"></div>';
+                }
+
+                week.forEach(date => {
+                    const data = history[date];
+                    const count = data ? data.count : 0;
+                    const level = count === 0 ? 0 : Math.min(Math.ceil((count / maxCount) * 4), 4);
+
+                    const title = data ? `${date}: ${count} comparison${count !== 1 ? 's' : ''}, avg ${(data.totalChange / data.count).toFixed(1)}% changed` : `${date}: No activity`;
+
+                    gridHtml += `<div class="activity-cell activity-level-${level}" title="${title}"></div>`;
+                });
+
+                gridHtml += '</div>';
+            });
+
+            gridHtml += '</div>';
+            grid.innerHTML = gridHtml;
+        }
+
+        // Clear all editors
+        function clearAll() {
+            editors.forEach(editor => editor.value = '');
+            document.getElementById('diffPreview').innerHTML = '<p class="text-gray-500 dark:text-gray-400 italic">Click "Compare Code" to see differences</p>';
+            document.getElementById('changeIndicator').style.backgroundColor = 'rgba(251, 191, 36, 0.1)';
+            document.getElementById('changeIndicator').style.boxShadow = '0 0 20px rgba(251, 191, 36, 0.5)';
+            document.getElementById('changeText').textContent = 'No comparison yet';
+        }
+
+        // Event listeners
+        document.getElementById('windowCount').addEventListener('change', (e) => {
+            createEditors(parseInt(e.target.value));
+        });
+
+        document.getElementById('compareBtn').addEventListener('click', compareCode);
+        document.getElementById('clearBtn').addEventListener('click', clearAll);
+
+        // Initialize
+        createEditors(2);
+        renderActivityGrid();
+    </script>
+</body>
+</html>
