@@ -18,6 +18,62 @@
             padding: 2px 8px;
             white-space: pre-wrap;
             word-break: break-all;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .line-number {
+            min-width: 40px;
+            text-align: right;
+            font-weight: 600;
+            opacity: 0.5;
+            user-select: none;
+            flex-shrink: 0;
+        }
+
+        .window-badge {
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .badge-removed {
+            background-color: #ff6b6b;
+            color: white;
+        }
+
+        .dark .badge-removed {
+            background-color: #c92a2a;
+            color: white;
+        }
+
+        .badge-added {
+            background-color: #51cf66;
+            color: white;
+        }
+
+        .dark .badge-added {
+            background-color: #2b8a3e;
+            color: white;
+        }
+
+        .badge-unchanged {
+            background-color: #868e96;
+            color: white;
+        }
+
+        .dark .badge-unchanged {
+            background-color: #495057;
+            color: white;
+        }
+
+        .line-content {
+            flex: 1;
+            min-width: 0;
         }
 
         .diff-added {
@@ -271,17 +327,45 @@
             // Update change indicator
             updateChangeIndicator(changePercentage);
 
-            // Generate diff HTML
+            // Generate diff HTML with line numbers and badges
             let diffHtml = '';
+            let lineNumber = 1;
+
             diffs.forEach(([op, text]) => {
                 const escaped = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-                if (op === -1) {
-                    diffHtml += `<div class="diff-line diff-removed">- ${escaped}</div>`;
-                } else if (op === 1) {
-                    diffHtml += `<div class="diff-line diff-added">+ ${escaped}</div>`;
-                } else {
-                    diffHtml += `<div class="diff-line diff-unchanged">  ${escaped}</div>`;
-                }
+                const lines = escaped.split('\n');
+
+                lines.forEach((line, index) => {
+                    // Skip empty last line from split
+                    if (index === lines.length - 1 && line === '') return;
+
+                    let badge = '';
+                    let prefix = '';
+                    let lineClass = '';
+
+                    if (op === -1) {
+                        badge = '<span class="window-badge badge-removed">W1</span>';
+                        prefix = '-';
+                        lineClass = 'diff-removed';
+                    } else if (op === 1) {
+                        badge = '<span class="window-badge badge-added">W2</span>';
+                        prefix = '+';
+                        lineClass = 'diff-added';
+                    } else {
+                        badge = '<span class="window-badge badge-unchanged">W1/W2</span>';
+                        prefix = ' ';
+                        lineClass = 'diff-unchanged';
+                    }
+
+                    diffHtml += `
+                        <div class="diff-line ${lineClass}">
+                            <span class="line-number">${lineNumber}</span>
+                            ${badge}
+                            <span class="line-content">${prefix} ${line}</span>
+                        </div>
+                    `;
+                    lineNumber++;
+                });
             });
 
             document.getElementById('diffPreview').innerHTML = diffHtml || '<p class="text-gray-500 dark:text-gray-400 italic">No differences found</p>';
