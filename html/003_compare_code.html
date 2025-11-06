@@ -4,13 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Code Diff Viewer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="(prefers-color-scheme: dark)">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/diff_match_patch/20121119/diff_match_patch.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        @import url('https://fonts.cdnfonts.com/css/cascadia-code');
+
+        body {
+            font-family: 'Inter', sans-serif;
+        }
         .code-editor {
-            font-family: 'Courier New', monospace;
+            font-family: 'Cascadia Code', 'Courier New', monospace;
             font-size: 14px;
-            line-height: 1.5;
+            line-height: 1.6;
             tab-size: 4;
         }
 
@@ -179,6 +188,31 @@
         .scrollbar-thin::-webkit-scrollbar-thumb:hover {
             background: #555;
         }
+
+        .modal-overlay {
+            backdrop-filter: blur(4px);
+        }
+
+        .language-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .lang-icon {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Syntax highlighting adjustments */
+        .hljs {
+            background: transparent !important;
+            padding: 0 !important;
+        }
     </style>
 </head>
 <body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
@@ -197,6 +231,19 @@
                     <option value="2">2</option>
                     <option value="3">3</option>
                     <option value="4">4</option>
+                </select>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <label for="languageSelect" class="text-sm font-medium">Language:</label>
+                <select id="languageSelect" class="px-3 py-2 text-base border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    <option value="auto">Auto-detect</option>
+                    <option value="javascript">JavaScript</option>
+                    <option value="typescript">TypeScript</option>
+                    <option value="python">Python</option>
+                    <option value="c">C</option>
+                    <option value="cpp">C++</option>
+                    <option value="svelte">Svelte</option>
                 </select>
             </div>
 
@@ -224,7 +271,10 @@
 
         <!-- Diff Preview -->
         <div class="mb-6">
-            <h2 class="text-xl font-bold mb-3 text-gray-800 dark:text-white">Diff Preview</h2>
+            <div class="flex items-center justify-between mb-3">
+                <h2 class="text-xl font-bold text-gray-800 dark:text-white">Diff Preview</h2>
+                <div id="languageBadge"></div>
+            </div>
             <div id="diffPreview" class="bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg p-4 min-h-[200px] max-h-[400px] overflow-auto scrollbar-thin code-editor">
                 <p class="text-gray-500 dark:text-gray-400 italic">Click "Compare Code" to see differences</p>
             </div>
@@ -252,6 +302,19 @@
         </div>
     </div>
 
+    <!-- Activity Detail Modal -->
+    <div id="activityModal" class="hidden fixed inset-0 z-50 flex items-center justify-center modal-overlay bg-black bg-opacity-50" onclick="closeActivityModal(event)">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-2xl max-w-2xl w-full mx-4 max-h-[80vh] overflow-y-auto" onclick="event.stopPropagation()">
+            <div class="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-6 flex justify-between items-center">
+                <h3 class="text-2xl font-bold text-gray-800 dark:text-white" id="modalDate"></h3>
+                <button onclick="closeActivityModal()" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 text-2xl leading-none">&times;</button>
+            </div>
+            <div class="p-6" id="modalContent">
+                <!-- Content will be populated dynamically -->
+            </div>
+        </div>
+    </div>
+
     <script>
         // Dark mode support
         if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
@@ -271,6 +334,73 @@
         // State
         let editors = [];
         let comparisonHistory = {};
+        let currentLanguage = 'auto';
+
+        // Language icons (SVG data)
+        const languageIcons = {
+            javascript: `<svg class="lang-icon" fill="#F7DF1E" viewBox="0 0 24 24"><path d="M0 0h24v24H0V0zm22.034 18.276c-.175-1.095-.888-2.015-3.003-2.873-.736-.345-1.554-.585-1.797-1.14-.091-.33-.105-.51-.046-.705.15-.646.915-.84 1.515-.66.39.12.75.42.976.9 1.034-.676 1.034-.676 1.755-1.125-.27-.42-.404-.601-.586-.78-.63-.705-1.469-1.065-2.834-1.034l-.705.089c-.676.165-1.32.525-1.71 1.005-1.14 1.291-.811 3.541.569 4.471 1.365 1.02 3.361 1.244 3.616 2.205.24 1.17-.87 1.545-1.966 1.41-.811-.18-1.26-.586-1.755-1.336l-1.83 1.051c.21.48.45.689.81 1.109 1.74 1.756 6.09 1.666 6.871-1.004.029-.09.24-.705.074-1.65l.046.067zm-8.983-7.245h-2.248c0 1.938-.009 3.864-.009 5.805 0 1.232.063 2.363-.138 2.711-.33.689-1.18.601-1.566.48-.396-.196-.597-.466-.83-.855-.063-.105-.11-.196-.127-.196l-1.825 1.125c.305.63.75 1.172 1.324 1.517.855.51 2.004.675 3.207.405.783-.226 1.458-.691 1.811-1.411.51-.93.402-2.07.397-3.346.012-2.054 0-4.109 0-6.179l.004-.056z"/></svg>`,
+            typescript: `<svg class="lang-icon" fill="#3178C6" viewBox="0 0 24 24"><path d="M1.125 0C.502 0 0 .502 0 1.125v21.75C0 23.498.502 24 1.125 24h21.75c.623 0 1.125-.502 1.125-1.125V1.125C24 .502 23.498 0 22.875 0zm17.363 9.75c.612 0 1.154.037 1.627.111a6.38 6.38 0 0 1 1.306.34v2.458a3.95 3.95 0 0 0-.643-.361 5.093 5.093 0 0 0-.717-.26 5.453 5.453 0 0 0-1.426-.2c-.3 0-.573.028-.819.086a2.1 2.1 0 0 0-.623.242c-.17.104-.3.229-.393.374a.888.888 0 0 0-.14.49c0 .196.053.373.156.529.104.156.252.304.443.444s.423.276.696.41c.273.135.582.274.926.416.47.197.892.407 1.266.628.374.222.695.473.963.753.268.279.472.598.614.957.142.359.214.776.214 1.253 0 .657-.125 1.21-.373 1.656a3.033 3.033 0 0 1-1.012 1.085 4.38 4.38 0 0 1-1.487.596c-.566.12-1.163.18-1.79.18a9.916 9.916 0 0 1-1.84-.164 5.544 5.544 0 0 1-1.512-.493v-2.63a5.033 5.033 0 0 0 3.237 1.2c.333 0 .624-.03.872-.09.249-.06.456-.144.623-.25.166-.108.29-.234.373-.38a1.023 1.023 0 0 0-.074-1.089 2.12 2.12 0 0 0-.537-.5 5.597 5.597 0 0 0-.807-.444 27.72 27.72 0 0 0-1.007-.436c-.918-.383-1.602-.852-2.053-1.405-.45-.553-.676-1.222-.676-2.005 0-.614.123-1.141.369-1.582.246-.441.58-.804 1.004-1.089a4.494 4.494 0 0 1 1.47-.629 7.536 7.536 0 0 1 1.77-.201zm-15.113.188h9.563v2.166H9.506v9.646H6.789v-9.646H3.375z"/></svg>`,
+            python: `<svg class="lang-icon" viewBox="0 0 24 24"><defs><linearGradient id="pyYellow" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#387EB8"/><stop offset="100%" style="stop-color:#366994"/></linearGradient><linearGradient id="pyBlue" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#FFE873"/><stop offset="100%" style="stop-color:#FFD43B"/></linearGradient></defs><path fill="url(#pyYellow)" d="M11.914 0C5.82 0 6.2 2.656 6.2 2.656l.007 2.752h5.814v.826H3.9S0 5.789 0 11.969c0 6.18 3.403 5.96 3.403 5.96h2.03v-2.867s-.109-3.42 3.35-3.42h5.766s3.24.052 3.24-3.148V3.202S18.28 0 11.913 0zM8.7 1.867a1.04 1.04 0 1 1 0 2.08 1.04 1.04 0 0 1 0-2.08z"/><path fill="url(#pyBlue)" d="M12.087 24c6.092 0 5.712-2.656 5.712-2.656l-.007-2.752h-5.814v-.826h8.123s3.9.445 3.9-5.735c0-6.18-3.404-5.96-3.404-5.96h-2.03v2.867s.109 3.42-3.35 3.42H9.452s-3.24-.052-3.24 3.148v5.292S5.72 24 12.087 24zm3.213-1.867a1.04 1.04 0 1 1 0-2.08 1.04 1.04 0 0 1 0 2.08z"/></svg>`,
+            c: `<svg class="lang-icon" fill="#A8B9CC" viewBox="0 0 24 24"><path d="M16.5921 9.1962s-.354-3.298-3.627-3.39c-3.2741-.09-4.9552 2.474-4.9552 6.14 0 3.6651 1.858 6.5972 5.0451 6.5972 3.184 0 3.5381-3.665 3.5381-3.665l6.1041.365s.36 3.31-2.196 5.836c-2.552 2.5241-5.6901 2.9371-7.8762 2.9201-2.19-.017-5.2261.034-8.1602-2.97-2.938-3.0101-3.436-5.9302-3.436-8.8002 0-2.8701.556-6.6702 4.047-9.5502C7.444.72 9.849 0 12.254 0c10.0422 0 10.7172 9.2602 10.7172 9.2602z"/></svg>`,
+            cpp: `<svg class="lang-icon" fill="#00599C" viewBox="0 0 24 24"><path d="M22.394 6c-.167-.29-.398-.543-.652-.69L12.926.22c-.509-.294-1.34-.294-1.848 0L2.26 5.31c-.508.293-.923 1.013-.923 1.6v10.18c0 .294.104.62.271.91.167.29.398.543.652.69l8.816 5.09c.508.293 1.34.293 1.848 0l8.816-5.09c.254-.147.485-.4.652-.69.167-.29.27-.616.27-.91V6.91c.003-.294-.1-.62-.268-.91zM12 19.11c-3.92 0-7.109-3.19-7.109-7.11 0-3.92 3.19-7.11 7.11-7.11a7.133 7.133 0 016.156 3.553l-3.076 1.78a3.567 3.567 0 00-3.08-1.78A3.56 3.56 0 008.444 12 3.56 3.56 0 0012 15.555a3.57 3.57 0 003.08-1.778l3.078 1.78A7.135 7.135 0 0112 19.11zm7.11-6.715h-.79v.79h-.79v-.79h-.79v-.79h.79v-.79h.79v.79h.79zm2.962 0h-.79v.79h-.79v-.79h-.79v-.79h.79v-.79h.79v.79h.79z"/></svg>`,
+            svelte: `<svg class="lang-icon" viewBox="0 0 24 24"><path fill="#FF3E00" d="M10.354 21.125a4.44 4.44 0 0 1-4.765-1.767 4.109 4.109 0 0 1-.703-3.107 3.898 3.898 0 0 1 .134-.522l.105-.321.287.21a7.21 7.21 0 0 0 2.186 1.092l.208.063-.02.208a1.253 1.253 0 0 0 .226.83 1.337 1.337 0 0 0 1.435.533 1.231 1.231 0 0 0 .343-.15l5.59-3.562a1.164 1.164 0 0 0 .524-.778 1.242 1.242 0 0 0-.211-.937 1.338 1.338 0 0 0-1.435-.533 1.23 1.23 0 0 0-.343.15l-2.133 1.36a4.078 4.078 0 0 1-1.135.499 4.44 4.44 0 0 1-4.765-1.766 4.108 4.108 0 0 1-.702-3.108 3.855 3.855 0 0 1 1.742-2.582l5.589-3.563a4.072 4.072 0 0 1 1.135-.499 4.44 4.44 0 0 1 4.765 1.767 4.109 4.109 0 0 1 .703 3.107 3.943 3.943 0 0 1-.134.522l-.105.321-.286-.21a7.204 7.204 0 0 0-2.187-1.093l-.208-.063.02-.207a1.255 1.255 0 0 0-.226-.831 1.337 1.337 0 0 0-1.435-.532 1.231 1.231 0 0 0-.343.15L8.62 9.368a1.162 1.162 0 0 0-.524.778 1.24 1.24 0 0 0 .211.937 1.338 1.338 0 0 0 1.435.533 1.235 1.235 0 0 0 .344-.15l2.132-1.36a4.025 4.025 0 0 1 1.135-.499 4.44 4.44 0 0 1 4.765 1.767 4.108 4.108 0 0 1 .703 3.107 3.857 3.857 0 0 1-1.742 2.583l-5.59 3.562a4.072 4.072 0 0 1-1.134.499z"/></svg>`
+        };
+
+        const languageColors = {
+            javascript: { bg: '#F7DF1E20', text: '#F7DF1E', border: '#F7DF1E' },
+            typescript: { bg: '#3178C620', text: '#3178C6', border: '#3178C6' },
+            python: { bg: '#36699420', text: '#366994', border: '#366994' },
+            c: { bg: '#A8B9CC20', text: '#555', border: '#A8B9CC' },
+            cpp: { bg: '#00599C20', text: '#00599C', border: '#00599C' },
+            svelte: { bg: '#FF3E0020', text: '#FF3E00', border: '#FF3E00' }
+        };
+
+        // Detect language from code
+        function detectLanguage(code) {
+            if (!code.trim()) return 'javascript';
+
+            // TypeScript detection
+            if (code.match(/interface\s+\w+|type\s+\w+\s*=/i) ||
+                code.match(/:\s*(string|number|boolean|any)\s*[;,)=]/)) {
+                return 'typescript';
+            }
+
+            // Python detection
+            if (code.match(/def\s+\w+\s*\(|import\s+\w+|from\s+\w+\s+import|print\s*\(/)) {
+                return 'python';
+            }
+
+            // C/C++ detection
+            if (code.match(/#include\s*[<"]|int\s+main\s*\(|cout\s*<<|printf\s*\(/)) {
+                if (code.match(/cout|cin|namespace|class.*{|template\s*</)) {
+                    return 'cpp';
+                }
+                return 'c';
+            }
+
+            // Svelte detection
+            if (code.match(/<script.*>[\s\S]*<\/script>[\s\S]*<style.*>/i) ||
+                code.match(/\$:\s+\w+|{#if|{#each|{@html/)) {
+                return 'svelte';
+            }
+
+            return 'javascript';
+        }
+
+        // Show language badge
+        function showLanguageBadge(lang) {
+            const badge = document.getElementById('languageBadge');
+            const langName = lang.charAt(0).toUpperCase() + lang.slice(1);
+            const colors = languageColors[lang] || { bg: '#88888820', text: '#888', border: '#888' };
+            const icon = languageIcons[lang] || '';
+
+            badge.innerHTML = `
+                <div class="language-badge" style="background: ${colors.bg}; color: ${colors.text}; border: 2px solid ${colors.border};">
+                    ${icon}
+                    <span>${langName}</span>
+                </div>
+            `;
+        }
 
         // Create editors based on count
         function createEditors(count) {
@@ -307,6 +437,14 @@
                 document.getElementById('diffPreview').innerHTML = '<p class="text-gray-500 dark:text-gray-400 italic">Please enter code in at least one window</p>';
                 return;
             }
+
+            // Detect or use selected language
+            const selectedLang = document.getElementById('languageSelect').value;
+            const detectedLang = selectedLang === 'auto' ? detectLanguage(text1 || text2) : selectedLang;
+            currentLanguage = detectedLang;
+
+            // Show language badge
+            showLanguageBadge(detectedLang);
 
             // Calculate diff
             const diffs = dmp.diff_main(text1, text2);
@@ -370,8 +508,8 @@
 
             document.getElementById('diffPreview').innerHTML = diffHtml || '<p class="text-gray-500 dark:text-gray-400 italic">No differences found</p>';
 
-            // Record comparison
-            recordComparison(changePercentage);
+            // Record comparison with language info
+            recordComparison(changePercentage, detectedLang, text1, text2);
             renderActivityGrid();
         }
 
@@ -406,15 +544,28 @@
         }
 
         // Record comparison in history
-        function recordComparison(changePercentage) {
+        function recordComparison(changePercentage, language, code1, code2) {
             const today = new Date().toISOString().split('T')[0];
+            const timestamp = new Date().toLocaleTimeString();
 
             if (!comparisonHistory[today]) {
-                comparisonHistory[today] = { count: 0, totalChange: 0 };
+                comparisonHistory[today] = {
+                    count: 0,
+                    totalChange: 0,
+                    comparisons: []
+                };
             }
 
             comparisonHistory[today].count++;
             comparisonHistory[today].totalChange += changePercentage;
+            comparisonHistory[today].comparisons.push({
+                timestamp,
+                changePercentage,
+                language,
+                linesChanged: (code1.split('\n').length + code2.split('\n').length) / 2,
+                code1Preview: code1.substring(0, 100),
+                code2Preview: code2.substring(0, 100)
+            });
         }
 
         // Render activity grid (GitHub style)
@@ -471,7 +622,8 @@
 
                     const title = data ? `${date}: ${count} comparison${count !== 1 ? 's' : ''}, avg ${(data.totalChange / data.count).toFixed(1)}% changed` : `${date}: No activity`;
 
-                    gridHtml += `<div class="activity-cell activity-level-${level}" title="${title}"></div>`;
+                    const clickable = data ? `onclick="showActivityDetail('${date}')"` : '';
+                    gridHtml += `<div class="activity-cell activity-level-${level}" title="${title}" ${clickable} style="${data ? 'cursor: pointer;' : ''}"></div>`;
                 });
 
                 gridHtml += '</div>';
@@ -481,10 +633,88 @@
             grid.innerHTML = gridHtml;
         }
 
+        // Show activity detail modal
+        function showActivityDetail(date) {
+            const data = comparisonHistory[date];
+            if (!data) return;
+
+            const modal = document.getElementById('activityModal');
+            const modalDate = document.getElementById('modalDate');
+            const modalContent = document.getElementById('modalContent');
+
+            modalDate.textContent = `Activity for ${new Date(date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}`;
+
+            let contentHtml = `
+                <div class="space-y-6">
+                    <div class="grid grid-cols-3 gap-4">
+                        <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg text-center">
+                            <div class="text-3xl font-bold text-blue-600 dark:text-blue-400">${data.count}</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-400 mt-1">Comparison${data.count !== 1 ? 's' : ''}</div>
+                        </div>
+                        <div class="bg-amber-50 dark:bg-amber-900/20 p-4 rounded-lg text-center">
+                            <div class="text-3xl font-bold text-amber-600 dark:text-amber-400">${(data.totalChange / data.count).toFixed(1)}%</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-400 mt-1">Avg Change</div>
+                        </div>
+                        <div class="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg text-center">
+                            <div class="text-3xl font-bold text-green-600 dark:text-green-400">${Math.round(data.comparisons.reduce((acc, c) => acc + c.linesChanged, 0) / data.count)}</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-400 mt-1">Avg Lines</div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h4 class="text-lg font-semibold mb-3 text-gray-800 dark:text-white">Comparison History</h4>
+                        <div class="space-y-3">
+            `;
+
+            data.comparisons.forEach((comparison, index) => {
+                const colors = languageColors[comparison.language] || { bg: '#88888820', text: '#888', border: '#888' };
+                const icon = languageIcons[comparison.language] || '';
+                const langName = comparison.language.charAt(0).toUpperCase() + comparison.language.slice(1);
+
+                contentHtml += `
+                    <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-4 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition">
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="flex items-center gap-3">
+                                <span class="text-sm font-semibold text-gray-600 dark:text-gray-400">#${index + 1}</span>
+                                <span class="text-sm text-gray-500 dark:text-gray-500">${comparison.timestamp}</span>
+                                <div class="language-badge" style="background: ${colors.bg}; color: ${colors.text}; border: 1px solid ${colors.border};">
+                                    ${icon}
+                                    <span>${langName}</span>
+                                </div>
+                            </div>
+                            <div class="text-sm font-semibold ${comparison.changePercentage < 30 ? 'text-green-600 dark:text-green-400' : comparison.changePercentage < 60 ? 'text-amber-600 dark:text-amber-400' : 'text-red-600 dark:text-red-400'}">
+                                ${comparison.changePercentage.toFixed(1)}% changed
+                            </div>
+                        </div>
+                        <div class="text-xs text-gray-500 dark:text-gray-500">
+                            ~${Math.round(comparison.linesChanged)} lines • ${comparison.code1Preview.length > 0 ? 'Code preview: ' + comparison.code1Preview.substring(0, 60) + '...' : 'No code preview'}
+                        </div>
+                    </div>
+                `;
+            });
+
+            contentHtml += `
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            modalContent.innerHTML = contentHtml;
+            modal.classList.remove('hidden');
+        }
+
+        // Close activity modal
+        function closeActivityModal(event) {
+            if (!event || event.target.id === 'activityModal') {
+                document.getElementById('activityModal').classList.add('hidden');
+            }
+        }
+
         // Clear all editors
         function clearAll() {
             editors.forEach(editor => editor.value = '');
             document.getElementById('diffPreview').innerHTML = '<p class="text-gray-500 dark:text-gray-400 italic">Click "Compare Code" to see differences</p>';
+            document.getElementById('languageBadge').innerHTML = '';
             document.getElementById('changeIndicator').style.backgroundColor = 'rgba(251, 191, 36, 0.1)';
             document.getElementById('changeIndicator').style.boxShadow = '0 0 20px rgba(251, 191, 36, 0.5)';
             document.getElementById('changeText').textContent = 'No comparison yet';
