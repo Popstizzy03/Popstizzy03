@@ -4,16 +4,20 @@
 
 ## 👨‍💻 About Me
 
-I'm Rabboni Kabongo, a passionate full-stack developer with expertise in building scalable, resilient systems. My interests span electronics, mathematics, and physics, and I'm dedicated to creating robust backend architectures while educating the next generation of engineers.
+I'm Rabboni Kabongo, a full-stack developer passionate about building scalable systems and exploring the fascinating intersections of electronics, mathematics, and physics. Currently pursuing Electrical and Electronic Engineering while teaching myself the art of backend architecture—because apparently, sleeping is optional when you're debugging distributed systems at 3 AM.
 
-## 🎯 Mission & Vision
+I believe the best engineers are eternal students. Every bug is a lesson, every refactor is growth, and every "it works on my machine" is an opportunity for humility.
 
-This isn't about pride — it's about **sovereignty**. I'm building a platform that will:
+## 🎯 What I'm Building
 
-- Teach real-world backend development  
-- Train industry-ready engineers and instructors  
-- Inspire self-hosted entrepreneurship  
-- Spread AI safety and digital self-reliance
+I'm working on a platform focused on:
+
+- **Real-world backend education** — Because tutorials that end at "Hello World" help nobody
+- **Training industry-ready engineers** — Bridging the gap between academic knowledge and production code
+- **Self-hosted solutions** — Teaching digital self-reliance in an increasingly centralized world
+- **AI safety awareness** — Because with great computational power comes great responsibility
+
+*Goal: Make backend development less intimidating and more accessible. Also, to finally understand why my Docker containers work perfectly until demo day.*
 
 ---
 
@@ -23,13 +27,15 @@ This isn't about pride — it's about **sovereignty**. I'm building a platform t
 
 ![GitHub Stats](https://github-readme-stats.vercel.app/api?username=Popstizzy03&show_icons=true&theme=dark&include_all_commits=true&count_private=true)
 
-# ![GitHub Streak](https://github-readme-streak-stats.herokuapp.com/?user=Popstizzy03&theme=dark)
+![GitHub Streak](https://github-readme-streak-stats.herokuapp.com/?user=Popstizzy03&theme=dark)
 
 </div>
 
 ---
 
-## 🛠️ Technical Skills
+## 🛠️ Technical Arsenal
+
+*Skills I'm actively using and continuously improving—because technology waits for no one*
 
 ### Programming Languages
 <p>
@@ -85,49 +91,39 @@ This isn't about pride — it's about **sovereignty**. I'm building a platform t
 
 ---
 
-## 💼 Professional Experience
+## 🎓 Education & Learning Journey
 
-### Backend Engineer | Current/Most Recent Position
-*Duration: Month Year - Present*
-- Developed scalable backend systems serving 100K+ users
-- Implemented microservices architecture reducing latency by 40%
-- Mentored junior developers and established coding standards
+### Bachelor of Electrical and Electronic Engineering | University of Zambia
+*2024 - 2028*
+- **Relevant Coursework**: Fundamentals of Electric Circuits, Calculus, Database Management
+- **Current Learning Focus**: Bridging the gap between electrical engineering principles and software systems
+- **Side Quest**: Figuring out if I can apply Kirchhoff's laws to microservices architecture (spoiler: sort of)
 
-### Full Stack Developer | Previous Position
-*Duration: Month Year - Month Year*
-- Built responsive frontend interfaces with React/Angular
-- Created RESTful APIs with Node.js and Python
-- Optimized database queries improving performance by 60%
-
----
-
-## 🎓 Education
-
-### Bachelor of Electrical And Electronic Engineering | University Of  Zambia
-*Duration: 2024 - 2028*
-- Relevant Courses: Fundamentals of Electric circuits, Calculus, Database Management
-- Thesis: "Scalable Architecture for High-Traffic Applications"
-
-### Certifications
-- AWS Certified Solutions Architect
-- Kubernetes Administrator (CKA)
-- MongoDB Certified Developer
+### Continuous Learning
+*Because technology moves faster than my git commits*
+- Exploring distributed systems patterns and their inevitable failure modes
+- Deep-diving into database optimization (because JOIN queries can always be faster)
+- Learning why "eventually consistent" means "consistently confusing"
+- Studying the ancient art of writing documentation that people actually read
 
 ---
 
-## 🌟 Featured Projects
+## 🚀 Featured Projects
 
-### [Project Name](https://github.com/Popstizzy03/project-repo)
-*Short description of the project and its purpose*
-- **Tech Stack**: Node.js, React, MongoDB, Docker
-- **Key Features**: Scalable architecture, Real-time updates, Secure authentication
-- **Achievements**: Handled 10K+ concurrent users, 99.9% uptime
+### [Project Showcase Coming Soon]
+*Currently building projects that solve real problems, not just look good in portfolios*
 
-### [Another Project](https://github.com/Popstizzy03/another-repo)
-*Short description of the project and its purpose*
-- **Tech Stack**: Python, FastAPI, PostgreSQL, AWS
-- **Key Features**: Machine learning integration, Data analytics, API gateway
-- **Achievements**: Reduced processing time by 70%, Cost-effective solution
+I'm working on several initiatives focused on backend architecture and developer education. Check back soon for detailed case studies, or feel free to explore my repositories where I document my learning journey—bugs, refactors, and all.
+
+**Philosophy**: I'd rather ship working code with known limitations than perfect vaporware. Every project here is a snapshot of what I knew at the time, not what I wish I knew.
+
+---
+
+## 💭 Random Thoughts from the Terminal
+
+> "There are two hard problems in computer science: cache invalidation, naming things, and off-by-one errors." — Anonymous (and accurate)
+
+Currently pondering: If a microservice fails in production and nobody's monitoring it, does it make a sound? (Yes, it makes the sound of a 3 AM Slack notification)
 
 ---
 
@@ -145,6 +141,8 @@ This isn't about pride — it's about **sovereignty**. I'm building a platform t
 
 ## 📫 Let's Connect
 
+I'm always interested in connecting with fellow developers, learning from experienced engineers, and discussing backend architecture, distributed systems, or why tabs vs. spaces still matters in 2026.
+
 <p align="center">
   <a href="mailto:kabongorabboni03@gmail.com">
     <img alt="Email" src="https://img.shields.io/badge/Email-D14836?style=for-the-badge&logo=gmail&logoColor=white"/>
@@ -152,7 +150,7 @@ This isn't about pride — it's about **sovereignty**. I'm building a platform t
   <a href="https://www.linkedin.com/in/yourprofile">
     <img alt="LinkedIn" src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white"/>
   </a>
-  <a href="[https://twitter.com/yourhandle](https://x.com/Popstizzy03)">
+  <a href="https://x.com/Popstizzy03">
     <img alt="Twitter" src="https://img.shields.io/badge/Twitter-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white"/>
   </a>
   <a href="https://yourportfolio.com">
@@ -164,8 +162,12 @@ This isn't about pride — it's about **sovereignty**. I'm building a platform t
 
 <div align="center">
 
-[![Made by Rabboni Kabongo](https://img.shields.io/badge/Made%20by-Rabboni_Kabongo-red?style=for-the-badge)](https://www.facebook.com/profile.php?id=61574399736520)
-![Version](https://img.shields.io/badge/Version-1.0.0-blue?style=for-the-badge)
+**"Learning in public, failing faster, building better."**
+
+[![Crafted by Rabboni Kabongo](https://img.shields.io/badge/Crafted%20by-Rabboni_Kabongo-red?style=for-the-badge)](https://www.facebook.com/profile.php?id=61574399736520)
+![Version](https://img.shields.io/badge/Version-2.0.0-blue?style=for-the-badge)
+![Status](https://img.shields.io/badge/Status-Perpetually_Learning-green?style=for-the-badge)
+
+*Last updated: When I remembered README files exist*
 
 </div>
-
